@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web-based OCR with Tesseract.js</title>
+</head>
+<body>
+
+    <h2>Web-based OCR with Tesseract.js</h2>
+    
+    <!-- Allow the user to upload an image -->
+    <input type="file" id="imageInput" accept="image/*">
+    
+    <!-- Button to initiate the OCR process -->
+    <button onclick="doOCR()">Perform OCR</button>
+    
+    <!-- Placeholder for the OCR result -->
+    <h3>Results:</h3>
+    <div id="ocr_results">Results will appear here</div>
+    
+    <!-- Placeholder for any error message -->
+    <div id="ocr_errors"></div>
+
+    <!-- Loading the Tesseract.js library -->
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js'></script>
+    
+    <script>
+        function doOCR() {
+            // Get the image from the HTML input element
+            const image = document.getElementById('imageInput').files[0];
+            
+            // Clear previous results and errors
+            document.getElementById('ocr_results').innerText = '';
+            document.getElementById('ocr_errors').innerText = '';
+
+            // Check if an image was uploaded
+            if (image) {
+                // Perform OCR using tesseract.js on the uploaded image
+                Tesseract.recognize(
+                    image,
+                    'eng', // Language code, "eng" for English
+                    { 
+                        logger: m => console.log(m) // Log progress to the console
+                    }
+                ).then(({ data: { text } }) => {
+                    // Display the OCR results
+                    document.getElementById('ocr_results').innerText = text;
+                }).catch((error) => {
+                    // Display errors (if any)
+                    document.getElementById('ocr_errors').innerText = 'Error: ' + error;
+                });
+            } else {
+                document.getElementById('ocr_errors').innerText = 'Please upload an image before proceeding.';
+            }
+        }
+    </script>
+
+</body>
+</html>
